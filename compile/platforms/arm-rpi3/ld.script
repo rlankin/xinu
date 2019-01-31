@@ -27,27 +27,29 @@ SECTIONS {
     *(.init .init.*)
   }
 
-  . = ALIGN(64);
+  /*. = ALIGN(64);*/
 
   .text : {
-    *(.txt .text.*)
+        _text = .;
+        *(.txt .text.*)
         *(.rodata .rodata.*)
     }
 
-    . = ALIGN(64);
+    /*. = ALIGN(64);*/
 
     .data : {
+        _data = .;
         *(.data .data.*)
     }
 
-    . = ALIGN(64);
+    /*. = ALIGN(64);*/
 
-    _bss = . ;
     .bss : {
+        _bss = .;
         *(.bss .bss.*)
     }
 
-    . = ALIGN(64);
+    /*. = ALIGN(64);*/
     _end = .;
 
     /* Discard comment and note (but not debugging) sections.  Some
@@ -57,4 +59,3 @@ SECTIONS {
         *(.comment .comment.* .note .note.*)
     }
 }
-

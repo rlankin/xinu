@@ -20,7 +20,7 @@ C_FILES += udelay.c
 
 # Files for semaphores
 C_FILES += signal.c signaln.c wait.c semcreate.c semfree.c semcount.c
- 
+
 # Files for monitors
 #C_FILES += moncreate.c monfree.c moncount.c lock.c unlock.c
 
@@ -42,6 +42,9 @@ C_FILES += debug.c
 
 # Files for reading tape archives
 C_FILES += tar.c
+
+# Files for assignments
+C_FILES += printsegaddress.c
 
 # Add the files to the compile source path
 DIR = ${TOPDIR}/${COMP}

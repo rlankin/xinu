@@ -44,9 +44,12 @@ struct memblock
 extern struct memblock memlist;     /**< head of free memory list           */
 
 /* Other memory data */
-
+extern void _start(void);
 extern void *_end;              /**< linker provides end of image       */
 extern void *memheap;           /**< bottom of heap                     */
+extern int _text;
+extern int _data;
+extern int _bss;
 
 /* Memory function prototypes */
 void *memget(uint);

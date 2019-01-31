@@ -21,3 +21,4 @@
 #include <safemem.h>
 #include <platform.h>
 #include <version.h>
+#include <assignment.h>

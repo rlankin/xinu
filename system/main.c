@@ -11,6 +11,7 @@
 #include <thread.h>
 #include <version.h>
 #include <stdlib.h>
+#include <assignment.h>
 
 void print_os_info(void);
 
@@ -171,4 +172,6 @@ void print_os_info(void)
 	kprintf("           [0x%08X to 0x%08X]\r\n\r\n",
 			(ulong)memheap, (ulong)platform.maxaddr - 1);
 	kprintf("\r\n");
+
+    printsegaddress();
 }

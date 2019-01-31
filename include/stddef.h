@@ -21,6 +21,30 @@ typedef unsigned long ulong;    /**< unsigned long type                 */
 typedef char bool;              /**< boolean type                       */
 typedef unsigned long size_t;   /**< size type                          */
 
+typedef	signed char	int8;
+typedef	unsigned char	byte;
+typedef	unsigned char	uint8;
+typedef	int		int32;
+typedef	short		int16;
+typedef	unsigned int	uint32;
+typedef uint32		uintn;
+typedef	unsigned short	uint16;
+typedef	unsigned long long uint64;
+
+/* Xinu-specific types */
+typedef	int32	sid32;		/* semaphore ID				*/
+typedef	int16	qid16;		/* queue ID				*/
+typedef	int32	pid32;		/* process ID				*/
+typedef	int32	did32;		/* device ID				*/
+typedef	int16	pri16;		/* process priority			*/
+typedef	uint32	umsg32;		/* message passed among processes	*/
+typedef	int32	bpid32;		/* buffer pool ID			*/
+typedef	byte	bool8;		/* Boolean type				*/
+typedef	uint32	intmask;	/* saved interrupt mask			*/
+typedef	int32	ibid32;		/* index block ID (used in file system)	*/
+typedef	int32	dbid32;		/* data block ID (used in file system)	*/
+typedef	int32	uid32;		/* ID for UDP table descriptor		*/
+
 /* Function declaration return types */
 typedef int syscall;            /**< system call declaration            */
 typedef int devcall;            /**< device call declaration            */
