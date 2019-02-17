@@ -27,7 +27,7 @@ SECTIONS {
     *(.init .init.*)
   }
 
-  /*. = ALIGN(64);*/
+  . = ALIGN(64);
 
   .text : {
         text = ABSOLUTE(.);
@@ -36,7 +36,7 @@ SECTIONS {
         etext = ABSOLUTE(.);
     }
 
-    /*. = ALIGN(64);*/
+    . = ALIGN(64);
 
     .data : {
         data = ABSOLUTE(.);
@@ -44,7 +44,7 @@ SECTIONS {
         edata = ABSOLUTE(.);
     }
 
-    /*. = ALIGN(64);*/
+    . = ALIGN(64);
 
     .bss : {
         _bss = ABSOLUTE(.);
@@ -54,7 +54,7 @@ SECTIONS {
         _end = ABSOLUTE(.);
     }
 
-    /*. = ALIGN(64);*/
+    . = ALIGN(64);
 
     /* Discard comment and note (but not debugging) sections.  Some
      * versions of GNU ld would otherwise automatically place the

@@ -5,20 +5,24 @@
 
 #include <xinu.h>
 
+/*
+ * Note: The values produced by this function may not line up to Xinu's start up
+ * output exactly due to the fact that the segments are aligned on 64-byte
+ * boundaries. If the alignments in ld.script are removed, the values line up
+ * exactly.
+ */
+void printseginfo(char *name, int *start, int *end) {
+    kprintf("%10d bytes %s\r\n", end - start, name);
+    kprintf("           Range: [0x%08X to 0x%08X]\r\n", start, end - 1);
+    kprintf("           Bytes: [0x%08X, 0x%08X, 0x%08X, 0x%08X, ...]\r\n", start[0], start[1], start[2], start[3]);
+}
+
 void printsegaddress() {
 	kprintf("Segment addresses:\r\n");
 
-    kprintf("%10d bytes text\r\n", (ulong)&etext - (ulong)&text);
-    kprintf("           Range: [0x%08x to 0x%08x]\r\n", (ulong)&text, (ulong)&etext - 1);
-    kprintf("           Bytes: [%d, %d, %d, %d, ...]\r\n", text, *(&text + 1), *(&text + 2), *(&text + 3));
-
-    kprintf("%10d bytes data\r\n", (ulong)&edata - (ulong)&data);
-    kprintf("           Range: [0x%08x to 0x%08x]\r\n", (ulong)&data, (ulong)&edata - 1);
-    kprintf("           Bytes: [%d, %d, %d, %d, ...]\r\n", data, *(&data + 1), *(&data + 2), *(&data + 3));
-
-    kprintf("%10d bytes bss\r\n", (ulong)&ebss - (ulong)&bss);
-    kprintf("           Range: [0x%08x to 0x%08x]\r\n", (ulong)&bss, (ulong)&ebss - 1);
-    kprintf("           Bytes: [%d, %d, %d, %d, ...]\r\n", bss, *(&bss + 1), *(&bss + 2), *(&bss + 3));
+    printseginfo("text", &text, &etext);
+    printseginfo("data", &data, &edata);
+    printseginfo("bss", &bss, &ebss);
 
     kprintf("\r\n");
 }
