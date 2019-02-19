@@ -174,4 +174,5 @@ void print_os_info(void)
 	kprintf("\r\n");
 
     printsegaddress();
+    sdtest1();
 }

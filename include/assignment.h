@@ -8,5 +8,9 @@
 #define _ASSIGNMENT_H_
 
 void printsegaddress(void);
+int stackdepth(void);
+void sdtest1(void);
+void sdtest2(void);
+void sdtest3(void);
 
 #endif

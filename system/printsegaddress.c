@@ -6,7 +6,9 @@
 #include <xinu.h>
 
 /*
- * Note: The values produced by this function may not line up to Xinu's start up
+ * Print information about the text, data, and bss memory segments.
+ *
+ * The values produced by this function may not line up to Xinu's start up
  * output exactly due to the fact that the segments are aligned on 64-byte
  * boundaries. If the alignments in ld.script are removed, the values line up
  * exactly.

@@ -15,7 +15,7 @@ ASFLAGS  += -mcpu=cortex-a53
 
 # Extra compiler flag that disables gcc from generating unaligned memory accesses
 # This is used as an alternative to doing this in the assembly code in start.S
-CFLAGS	 += -mno-unaligned-access
+CFLAGS	 += -mno-unaligned-access -fno-omit-frame-pointer
 
 # Add a define so we can test for Raspberry Pi in C code if absolutely needed
 DEFS     += -D_XINU_PLATFORM_ARM_RPI_3_
@@ -42,4 +42,3 @@ DEVICES  := uart-pl011      \
 #            telnet          \
 #            framebuffer_rpi \
 #            usbkbd          \
-
