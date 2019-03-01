@@ -62,5 +62,6 @@ devcall ttyWrite(device *, void *, uint);
 devcall ttyGetc(device *);
 devcall ttyPutc(device *, char);
 devcall ttyControl(device *, int, long, long);
+void ttyHandler(void);
 
 #endif                          /* _TTY_H_ */
