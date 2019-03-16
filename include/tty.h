@@ -31,6 +31,9 @@
 #define TTY_CTRL_SET_OFLAG  0x22 /**< set output flags                  */
 #define TTY_CTRL_CLR_OFLAG  0x23 /**< clear output flags                */
 
+/* Special characters */
+#define TY_PS 0x14               /**< (ctrl+t) process information      */
+
 /**
  * TTY control block
  */
@@ -62,6 +65,5 @@ devcall ttyWrite(device *, void *, uint);
 devcall ttyGetc(device *);
 devcall ttyPutc(device *, char);
 devcall ttyControl(device *, int, long, long);
-void ttyHandler(void);
 
 #endif                          /* _TTY_H_ */

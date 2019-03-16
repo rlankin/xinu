@@ -1,6 +1,7 @@
 /**
  * @file ttyRead.c
  *
+ * Modified by Ryan Lankin
  */
 /* Embedded Xinu, Copyright (C) 2009.  All rights reserved. */
 
@@ -8,8 +9,10 @@
 #include <ctype.h>
 #include <device.h>
 #include <tty.h>
+#include <thread.h>
 
 static void ttyEcho(device *, char);
+void ttyPS(void);
 
 /**
  * @ingroup tty
@@ -135,7 +138,13 @@ devcall ttyRead(device *devptr, void *buf, uint len)
             ttyptr->ieof = TRUE;
             ttyptr->idelim = TRUE;
             break;
-            /* All other characters */
+        /* ctrl+t */
+        case TY_PS:
+            ttyPS();
+            ttyptr->icount = 0;
+            ttyptr->idelim = TRUE;
+            break;
+        /* All other characters */
         default:
             /* Ignore unprintable characters */
             if (!isprint(ch))
@@ -210,4 +219,63 @@ static void ttyEcho(device *devptr, char ch)
 
     /* Echo character */
     ttyPutc(devptr, ch);
+}
+
+/*
+ * This is an exact copy of the xsh_ps() function that uses kprintf() instead of
+ * printf() and has the parameter handling removed.
+ *
+ * NOTE: After this function runs, the shell prompt that the user is returned to
+ * does not properly have its color handled. Normally, the user is returned to a
+ * prompt that looks like:
+ *
+ * xsh$
+ *
+ * and is colored red. Instead, the kprintf calls cause the prompt to look like:
+ *
+ * [1;31mxsh$
+ *
+ * The prompt functions properly, but is not colored red, as can be seen by the
+ * [1;31m not correctly being captured as caused to render red text. I believe
+ * this may have something to do with the fact that kprintf() ultimately writes
+ * directly to a serial device instead of calling the normal putc() function.
+ *
+ * This is fixed by replacing the calls to kprintf() in this function with
+ * calls to printf().
+ */
+void ttyPS() {
+    struct thrent *thrptr;
+    int i;
+
+    /* readable names for PR* status in thread.h */
+    static const char * const pstnams[] = {
+        "curr", "free", "ready", "recv",
+        "sleep", "susp", "wait", "rtim"
+    };
+
+    // Print header
+    kprintf("\r\n%3s %-16s %5s %4s %4s %10s %-10s %10s\r\n",
+           "TID", "NAME", "STATE", "PRIO", "PPID", "STACK BASE",
+           "STACK PTR", "STACK LEN");
+    kprintf("%3s %-16s %5s %4s %4s %10s %-10s %10s\r\n",
+           "---", "----------------", "-----", "----", "----",
+           "----------", "----------", " ---------");
+
+    /* Output information for each thread */
+    for (i = 0; i < NTHREAD; i++) {
+        thrptr = &thrtab[i];
+        if (thrptr->state == THRFREE) {
+            continue;
+        }
+
+        kprintf("%3d %-16s %5s %4d %4d 0x%08lX 0x%08lX %10lu\r\n",
+               i,
+               thrptr->name,
+               pstnams[(int)thrptr->state - 1],
+               thrptr->prio,
+               thrptr->parent,
+               (ulong)thrptr->stkbase,
+               (ulong)thrptr->stkptr,
+               thrptr->stklen);
+    }
 }
