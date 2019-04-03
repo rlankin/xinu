@@ -23,35 +23,15 @@ syscall swait(
         return SYSERR;
     }
 
-    semtab_acquire(semA);
     semAEntry = &semtab[semA];
-    if (semAEntry->state == SFREE) {
-        restore(mask);
-        return SYSERR;
-    }
-    semtab_release(semA);
-
-    semtab_acquire(semB);
     semBEntry = &semtab[semB];
-    if (semBEntry->state == SFREE) {
-        restore(mask);
-        return SYSERR;
-    }
-    semtab_release(semB);
 
     threadEntry = &thrtab[thrcurrent[cpuid]];
 
     // Wait for both semaphores to become available
-    // while (semAEntry->count <= 0 || semBEntry->count <= 0) {
     while (true) {
         semtab_acquire(semA);
         semtab_acquire(semB);
-
-        if (semAEntry->count <= 0 || semBEntry->count <= 0) {
-            semtab_release(semA);
-            semtab_release(semB);
-            break;
-        }
 
         // If either semaphore has been deleted, exit with error
         if (semAEntry->state == SFREE || semBEntry->state == SFREE) {
@@ -59,6 +39,13 @@ syscall swait(
             semtab_release(semB);
             restore(mask);
             return SYSERR;
+        }
+
+        // Stop waiting if both semaphores are available
+        if (semAEntry->count <= 0 || semBEntry->count <= 0) {
+            semtab_release(semA);
+            semtab_release(semB);
+            break;
         }
 
         // Wait
