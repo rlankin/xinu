@@ -10,9 +10,10 @@ syscall ssignal(
         sid32   semB
         )
 {
-    irqmask mask = disable();
+    extern int resdefer;
     struct sement *semAEntry;
     struct sement *semBEntry;
+    irqmask mask = disable();
 
     if (isbadsem(semA) || isbadsem(semB) || semA == semB) {
         restore(mask);

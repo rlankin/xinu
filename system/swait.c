@@ -4,6 +4,7 @@
  */
 
 #include <xinu.h>
+#include <thread.h>
 
 // TODO: Make compatible with Huang's version?
 
@@ -12,11 +13,13 @@ syscall swait(
         sid32 semB
         )
 {
-    irqmask mask = disable();
     struct thrent *threadEntry;
     struct sement *semAEntry;
     struct sement *semBEntry;
     struct sement *semWait;
+    sid32 semWaitId;
+    int cpuid;
+    irqmask mask = disable();
 
     if (isbadsem(semA) || isbadsem(semB) || semA == semB) {
         restore(mask);
@@ -26,10 +29,11 @@ syscall swait(
     semAEntry = &semtab[semA];
     semBEntry = &semtab[semB];
 
+    cpuid = getcpuid();
     threadEntry = &thrtab[thrcurrent[cpuid]];
 
     // Wait for both semaphores to become available
-    while (true) {
+    while (1) {
         semtab_acquire(semA);
         semtab_acquire(semB);
 
@@ -51,8 +55,10 @@ syscall swait(
         // Wait
         if (semAEntry->count <= 0) {
             semWait = semAEntry;
+            semWaitId = semA;
         } else {
             semWait = semBEntry;
+            semWaitId = semB;
         }
 
         (semWait->count)--;
@@ -60,16 +66,16 @@ syscall swait(
 
         thrtab_acquire(thrcurrent[cpuid]);
         threadEntry->state = THRWAIT;
-        threadEntry->sem = semWait;
+        threadEntry->sem = semWaitId;
 		thrtab_release(thrcurrent[cpuid]);
 
         semtab_release(semA);
         semtab_release(semB);
         resched();
 
-        semtab_acquire(semWait);
+        semtab_acquire(semWaitId);
         (semWait->count)++;
-        semtab_release(semWait);
+        semtab_release(semWaitId);
     }
 
     wait(semA);

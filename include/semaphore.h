@@ -49,5 +49,7 @@ syscall signaln(semaphore, int);
 semaphore semcreate(int);
 syscall semfree(semaphore);
 syscall semcount(semaphore);
+syscall swait(sid32, sid32);
+syscall ssignal(sid32, sid32);
 
 #endif                          /* _SEMAPHORE_H */

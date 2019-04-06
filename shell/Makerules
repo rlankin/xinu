@@ -54,6 +54,9 @@ C_FILES += xsh_usbinfo.c
 # Test commands
 C_FILES += xsh_test.c xsh_testsuite.c
 
+# Other commands
+C_FILES += xsh_dine.c
+
 S_FILES =
 
 # Add the files to the compile source path

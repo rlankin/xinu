@@ -70,7 +70,7 @@ extern unsigned int getcpuid(void);
 /** Maximum number of local devices */
 #define NLOCDEV     10
 
-/* Expose sizeof(struct thrent) and offsetof(struct thrent, stkdiv) to 
+/* Expose sizeof(struct thrent) and offsetof(struct thrent, stkdiv) to
  * assembly files. */
 #define THRENTSIZE 148
 #define STKDIVOFFSET 104
@@ -124,6 +124,7 @@ tid_typ gettid(void);
 syscall getprio(tid_typ);
 syscall kill(int);
 int ready(tid_typ, bool);
+syscall resume(tid_typ);
 int resched(void);
 syscall sleep(uint);
 syscall unsleep(tid_typ);
