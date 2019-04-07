@@ -101,9 +101,9 @@ void phil_func(int32 arg, int nmeals, sid32 term)
         /*----------*/
         think_time = RLOW + rand() % (RHIGH - RLOW);
 #ifdef SHOWTIME
-        printf("P%d thinking for %d msec.\n", phil_num, think_time);
+        kprintf("P%d thinking for %d msec.\r\n", phil_num, think_time);
 #else
-        printf("P%d thinking.\n", phil_num);
+        kprintf("P%d thinking.\r\n", phil_num);
 #endif
         sleep(think_time);
 
@@ -114,10 +114,10 @@ void phil_func(int32 arg, int nmeals, sid32 term)
         /*--------*/
         eat_time = RLOW + rand() % (RHIGH - RLOW);
 #ifdef SHOWTIME
-        printf("P%d eating meal # %d for %d msec.\n",
+        kprintf("P%d eating meal # %d for %d msec.\r\n",
             phil_num, my_meals+1, eat_time);
 #else
-        printf("P%d eating meal # %d.\n",phil_num, my_meals+1);
+        kprintf("P%d eating meal # %d.\r\n",phil_num, my_meals+1);
 #endif
         sleep(eat_time);
 
@@ -127,9 +127,9 @@ void phil_func(int32 arg, int nmeals, sid32 term)
     }
 
 #ifdef SHOWTIME
-    printf("P%d done.\n", phil_num);
+    kprintf("P%d done.\r\n", phil_num);
 #else
-    printf("P%d done.\n", phil_num);
+    kprintf("P%d done.\r\n", phil_num);
 #endif
 
     eaten[phil_num] = my_meals;
@@ -150,14 +150,14 @@ shellcmd xsh_dine(int argc, char *argv[])
     int i;
 
     if ((argc == 2 && !strcmp(argv[1],"--help")) || argc != 2) {
-        printf("Usage: dine NMEALS\n");
-        printf("Read the program comments for details.\n");
+        kprintf("Usage: dine NMEALS\r\n");
+        kprintf("Read the program comments for details.\r\n");
         return 0;
     }
     nmeals = atoi(argv[1]);
     if (nmeals < 1) {
-        printf("Error: NMEALS must be between at least 1.\n");
-        printf("Read the program comments for details.\n");
+        kprintf("Error: NMEALS must be between at least 1.\r\n");
+        kprintf("Read the program comments for details.\r\n");
         return 0;
     }
 
@@ -185,7 +185,7 @@ shellcmd xsh_dine(int argc, char *argv[])
     for (i=0;i<NPHIL;i++) {        /* first we do the fork semaphores */
         sem[i] = semcreate(1);
         if (sem[i] == SYSERR) {
-            printf("Error: cannot create semaphore %d\n", i+1);
+            kprintf("Error: cannot create semaphore %d\r\n", i+1);
             while (--i >= 0)        /* cleanup */
             semfree(sem[i]);
             return 0;            /* we've failed... */
@@ -197,7 +197,7 @@ shellcmd xsh_dine(int argc, char *argv[])
     /*-------------------------*/
     term = semcreate(0);
     if (term == SYSERR) {
-        printf("Error: cannot create term semaphore\n");
+        kprintf("Error: cannot create term semaphore\r\n");
         for(i=0;i<NPHIL;i++)
             semfree(sem[i]);
         return 0;            /* we've failed... */
@@ -210,10 +210,10 @@ shellcmd xsh_dine(int argc, char *argv[])
     for (i=0;i<NPHIL;i++) {
         char name[50];
 
-        sprintf(name,"phil%d",i);        /* create philosoper name */
+        kprintf(name,"phil%d",i);        /* create philosoper name */
         phil[i] = create(phil_func, 8192, 50, name, 3, i, nmeals, term);
         if (phil[i] == SYSERR) {
-            printf("Trouble creating philosoper %d.\n", i);
+            kprintf("Trouble creating philosoper %d.\r\n", i);
             for(i=0;i<NPHIL;i++)    /* cleanup */
                 semfree(sem[i]);
             semfree(term);
@@ -246,14 +246,14 @@ shellcmd xsh_dine(int argc, char *argv[])
     /*-----------------------------------------------------*/
     /* Display total number of meals each philosopher ate. */
     /*-----------------------------------------------------*/
-    printf("Phil#");
+    kprintf("Phil#");
     for(i=0;i<NPHIL;i++)
-        printf("\t%d",i);
-    printf("\n");
-    printf("#meals");
+        kprintf("\t%d",i);
+    kprintf("\r\n");
+    kprintf("#meals");
     for(i=0;i<NPHIL;i++)
-        printf("\t%d",eaten[i]);
-    printf("\n");
+        kprintf("\t%d",eaten[i]);
+    kprintf("\r\n");
 
     return 0;
 }

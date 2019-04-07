@@ -6,8 +6,6 @@
 #include <xinu.h>
 #include <thread.h>
 
-// TODO: Make compatible with Huang's version?
-
 syscall swait(
         sid32 semA,
         sid32 semB
@@ -46,14 +44,14 @@ syscall swait(
         }
 
         // Stop waiting if both semaphores are available
-        if (semAEntry->count <= 0 || semBEntry->count <= 0) {
+        if (semAEntry->count >= 0 && semBEntry->count >= 0) {
             semtab_release(semA);
             semtab_release(semB);
             break;
         }
 
         // Wait
-        if (semAEntry->count <= 0) {
+        if (semAEntry->count < 0) {
             semWait = semAEntry;
             semWaitId = semA;
         } else {
@@ -61,8 +59,10 @@ syscall swait(
             semWaitId = semB;
         }
 
+        semtab_acquire(semWaitId);
         (semWait->count)--;
         enqueue(thrcurrent[cpuid], semWait->queue);
+        semtab_release(semWaitId);
 
         thrtab_acquire(thrcurrent[cpuid]);
         threadEntry->state = THRWAIT;
