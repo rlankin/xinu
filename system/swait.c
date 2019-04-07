@@ -50,7 +50,7 @@ syscall swait(
             break;
         }
 
-        // Wait
+        // Determine which semaphore we are waiting on
         if (semAEntry->count < 0) {
             semWait = semAEntry;
             semWaitId = semA;
@@ -59,25 +59,26 @@ syscall swait(
             semWaitId = semB;
         }
 
+        // Wait for semaphore to become available
         semtab_acquire(semWaitId);
         (semWait->count)--;
         enqueue(thrcurrent[cpuid], semWait->queue);
         semtab_release(semWaitId);
-
         thrtab_acquire(thrcurrent[cpuid]);
         threadEntry->state = THRWAIT;
         threadEntry->sem = semWaitId;
 		thrtab_release(thrcurrent[cpuid]);
-
         semtab_release(semA);
         semtab_release(semB);
         resched();
 
+        // Increment count of semaphore we were waiting on and try again
         semtab_acquire(semWaitId);
         (semWait->count)++;
         semtab_release(semWaitId);
     }
 
+    // Acquire both semaphores
     wait(semA);
     wait(semB);
 
